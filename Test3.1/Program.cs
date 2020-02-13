@@ -25,10 +25,17 @@ namespace Test3._1
 			{"array:entries:4", "value4"},
 			{"array:entries:5", "value5"}
 	   };
+	
+	   public static readonly Dictionary<string, string> _switchMappings =
+	 new Dictionary<string, string>
+	 {
+		{ "-CLKey1", "CommandLineKey1" },
+		{ "-CLKey2", "CommandLineKey2" }
+	 };
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
-				  .ConfigureHostConfiguration(config =>			     // Configuración del Host. Puede ser llamado varias veces
+				  .ConfigureHostConfiguration(config =>              // Configuración del Host. Puede ser llamado varias veces
 				  {
 					  var dict = new Dictionary<string, string>
 						{
@@ -38,26 +45,30 @@ namespace Test3._1
 
 					  config.AddInMemoryCollection(dict);
 				  })                                                 // Fin de Configuración del Host
-				  .ConfigureAppConfiguration((hostingContext, config) =>   // Configuración de la configuración, para especifar mas proveedores que los de por defecto
-				  {
-					  config.Sources.Clear();		// si quisieramos borrar los proveedores por defecto
 
-					  config.AddInMemoryCollection(arrayDict);
-					  config.AddJsonFile(
-						  "json_array.json", optional: false, reloadOnChange: false);
-					  config.AddJsonFile(
-						  "starship.json", optional: false, reloadOnChange: false);
-					  config.AddXmlFile(
-						  "tvshow.xml", optional: false, reloadOnChange: false);
-					  config.AddIniFile(
-							"config.ini", optional: true, reloadOnChange: true);
-					  config.AddEnvironmentVariables(prefix: "PREFIX_");             //todas las vars con ese prefijo. el prefijo será omitido cuando se carguen
-					  //config.AddEFConfiguration(
-					  //options => options.UseInMemoryDatabase("InMemoryDb"));
-					  config.AddCommandLine(args);   // la config con argumentos tendrás mas prioridad. 
-					  //ej  dotnet run CommandLineKey1=value1 --CommandLineKey2=value2 /CommandLineKey3=value3
+				.ConfigureAppConfiguration((hostingContext, config) =>   // Configuración de la configuración, para especifar mas proveedores que los de por defecto
+				{
+					//config.Sources.Clear();     // si quisieramos borrar los proveedores por defecto
 
-				  })
+					config.AddInMemoryCollection(arrayDict);
+					config.AddJsonFile(
+					 "json_array.json", optional: false, reloadOnChange: false);
+					config.AddJsonFile(
+					 "starship.json", optional: false, reloadOnChange: false);
+					config.AddXmlFile(
+					 "tvshow.xml", optional: false, reloadOnChange: false);
+					config.AddIniFile(
+					   "config.ini", optional: true, reloadOnChange: true);
+					config.AddEnvironmentVariables(prefix: "PREFIX_");             //todas las vars con ese prefijo. el prefijo será omitido cuando se carguen
+																				   //config.AddEFConfiguration(
+																				   //options => options.UseInMemoryDatabase("InMemoryDb"));
+					config.AddCommandLine(args);   // la config con argumentos tendrás mas prioridad. 
+												   //ej  dotnet run CommandLineKey1=value1 --CommandLineKey2=value2 /CommandLineKey3=value3
+
+					config.AddCommandLine(args, _switchMappings);  // tambien pueden usarse switchMappings, ver diccionario arriba. 
+																   // dotnet run -CLKey1=value1 -CLKey2=value2 daria value1 a la key CommandLineKey1
+
+				})
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
 					webBuilder.UseStartup<Startup>();  // Le dice que use la clase startup como punto inicial

@@ -13,23 +13,64 @@ namespace Test3._1
 {
 	public class Startup
 	{
-		public Startup(IConfiguration configuration)
+		public IConfiguration Configuration { get; }
+
+		private readonly IWebHostEnvironment _env;
+
+		public Startup(IConfiguration configuration, IWebHostEnvironment env)  // Método 2 de obtener entorno
 		{
 			Configuration = configuration;
+			_env = env;
 		}
-
-		public IConfiguration Configuration { get; }
+		
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			if (_env.IsDevelopment())				// Uso de Método 2 
+			{
+				// Development environment code
+			}
+			else if (_env.IsStaging())
+			{
+				// Staging environment code
+			}
+			else
+			{
+				// Code for all other environments
+			}
+
+
 			services.AddControllersWithViews();
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		/*
+		public void ConfigureStagingServices(IServiceCollection services)  // Método 4
 		{
-			if (env.IsDevelopment())
+			StartupConfigureServices(services);
+		}
+		private void StartupConfigureServices(IServiceCollection services)  
+		{
+			services.AddMvc();
+		}
+
+		public void ConfigureStaging(IApplicationBuilder app, IWebHostEnvironment env)  // Método 4
+		{
+			if (!env.IsStaging())
+			{
+				throw new Exception("Not staging.");
+			}
+
+			app.UseExceptionHandler("/Error");
+			app.UseStaticFiles();
+			app.UseMvc();
+		}*/
+
+
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)  // Método 1 de obtener entorno
+		{
+			if (env.IsDevelopment())											// Uso de método 1
 			{
 				app.UseDeveloperExceptionPage();
 			}
@@ -39,6 +80,12 @@ namespace Test3._1
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+			
+			if (_env.IsDevelopment())               // Uso de Método 2 
+			{
+				// Development environment code
+			}
+
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 
@@ -54,4 +101,30 @@ namespace Test3._1
 			});
 		}
 	}
+
+	/*
+	// Startup class to use in the Development environment
+	public class StartupDevelopment				// Método 3 para uso de entornos
+	{
+		public void ConfigureServices(IServiceCollection services)
+		{
+		}
+
+		public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
+		{
+		}
+	}
+
+	// Startup class to use in the Production environment
+	public class StartupProduction
+	{
+		public void ConfigureServices(IServiceCollection services)
+		{
+		}
+
+		public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
+		{
+		}
+	}*/
+
 }

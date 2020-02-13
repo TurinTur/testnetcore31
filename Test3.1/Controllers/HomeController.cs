@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Test3._1.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Test3._1.Controllers
 {
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly IConfiguration _config;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, IConfiguration config)  // Inyección de dependencias
 		{
+			_config = config;   // Ya podemos leer la configuración
 			_logger = logger;
 		}
 
