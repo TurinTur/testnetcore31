@@ -44,28 +44,7 @@ namespace Test3._1
 			services.AddControllersWithViews();
 		}
 
-		/*
-		public void ConfigureStagingServices(IServiceCollection services)  // Método 4
-		{
-			StartupConfigureServices(services);
-		}
-		private void StartupConfigureServices(IServiceCollection services)  
-		{
-			services.AddMvc();
-		}
-
-		public void ConfigureStaging(IApplicationBuilder app, IWebHostEnvironment env)  // Método 4
-		{
-			if (!env.IsStaging())
-			{
-				throw new Exception("Not staging.");
-			}
-
-			app.UseExceptionHandler("/Error");
-			app.UseStaticFiles();
-			app.UseMvc();
-		}*/
-
+		
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)  // Método 1 de obtener entorno
